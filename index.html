@@ -83,11 +83,15 @@ a:focus-visible{outline:2px solid var(--black);outline-offset:4px}
 .cities h2{font-size:clamp(3rem,7vw,6rem)}
 .cities-head p{margin:0;max-width:26em;color:var(--muted)}
 ul.list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;column-gap:72px}
-.list li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:20px 12px;border-top:1px solid var(--line);transition:background .3s,color .3s,padding .3s}
+.list li{border-top:1px solid var(--line)}
 .list li:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
-.list li:hover{background:var(--black);color:var(--off);padding-left:24px;padding-right:24px}
+.list a{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:20px 12px;color:inherit;text-decoration:none;transition:background .3s,color .3s,padding .3s}
+.list a:hover,.list a:focus-visible{background:var(--black);color:var(--off);padding-left:24px;padding-right:24px;outline:0}
+.list .go{margin-left:auto;font-size:1.1rem;opacity:.55;transition:opacity .3s}
+.list a:hover .go,.list a:focus-visible .go{opacity:1}
 .city{font-family:var(--display);font-size:clamp(1.9rem,3.4vw,2.9rem);font-weight:400;line-height:1.05}
-.region{font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;text-align:right;white-space:nowrap}
+.region{font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;text-align:right;white-space:nowrap;margin-left:auto}
+.list .region+.go{margin-left:0}
 .cities-foot{margin-top:28px;font-size:.85rem;color:var(--muted)}
 
 /* plan */
@@ -150,7 +154,7 @@ footer .eyebrow{color:var(--muted)}
   .formbox{padding:28px 20px}
   .bar .eyebrow{font-size:.6rem}
 }
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.list li,.btn{transition:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.list a,.btn{transition:none}}
 </style>
 </head>
 <body>
@@ -186,9 +190,9 @@ footer .eyebrow{color:var(--muted)}
 <section class="cities wrap" id="cities"><div class="inner">
   <div class="cities-head">
     <h2>Pick your <em>city</em></h2>
-    <p>Listed alphabetically. Every city gets a month.</p>
+    <p>Listed alphabetically. Tap your city to choose it.</p>
   </div>
-  <ul class="list"><li><span class="city">Birmingham</span><span class="region">West Midlands</span></li><li><span class="city">Brighton</span><span class="region">Sussex</span></li><li><span class="city">Bristol</span><span class="region">South West</span></li><li><span class="city">Cheltenham &amp; the Cotswolds</span><span class="region">Gloucestershire</span></li><li><span class="city">Edinburgh</span><span class="region">Scotland</span></li><li><span class="city">Glasgow</span><span class="region">Scotland</span></li><li><span class="city">Leeds</span><span class="region">Yorkshire</span></li><li><span class="city">Leicester</span><span class="region">Leicestershire</span></li><li><span class="city">Liverpool</span><span class="region">Merseyside</span></li><li><span class="city">Manchester</span><span class="region">Greater Manchester</span></li><li><span class="city">Oxford</span><span class="region">Oxfordshire</span></li><li><span class="city">York</span><span class="region">Yorkshire</span></li></ul>
+  <ul class="list"><li><a href="#join" data-city="Birmingham"><span class="city">Birmingham</span><span class="region">West Midlands</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="Brighton"><span class="city">Brighton</span><span class="region">Sussex</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="Bristol"><span class="city">Bristol</span><span class="region">South West</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="Cheltenham &amp; the Cotswolds"><span class="city">Cheltenham &amp; the Cotswolds</span><span class="region">Gloucestershire</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="Edinburgh"><span class="city">Edinburgh</span><span class="region">Scotland</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="Glasgow"><span class="city">Glasgow</span><span class="region">Scotland</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="Leeds"><span class="city">Leeds</span><span class="region">Yorkshire</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="Leicester"><span class="city">Leicester</span><span class="region">Leicestershire</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="Liverpool"><span class="city">Liverpool</span><span class="region">Merseyside</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="Manchester"><span class="city">Manchester</span><span class="region">Greater Manchester</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="Oxford"><span class="city">Oxford</span><span class="region">Oxfordshire</span><span class="go" aria-hidden="true">&rarr;</span></a></li><li><a href="#join" data-city="York"><span class="city">York</span><span class="region">Yorkshire</span><span class="go" aria-hidden="true">&rarr;</span></a></li></ul>
 </div></section>
 
 <section class="plan wrap"><div class="inner">
@@ -421,5 +425,25 @@ footer .eyebrow{color:var(--muted)}
   <a class="link" href="https://sixfiguredfemales.com/">sixfiguredfemales.com</a>
 </div></footer>
 
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.list a[data-city]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var sel = document.getElementById('inf_custom_Pickyourcityfranchise');
+      if (sel) {
+        sel.value = a.getAttribute('data-city');
+        sel.closest('.infusion-field').classList.remove('has-error');
+      }
+      document.getElementById('join').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      setTimeout(function () {
+        var first = document.getElementById('inf_field_FirstName');
+        if (first && !first.closest('form').hidden) { first.focus({ preventScroll: true }); }
+      }, reduce ? 0 : 600);
+    });
+  });
+})();
+</script>
 </body>
 </html>
