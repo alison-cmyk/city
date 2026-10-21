@@ -134,7 +134,21 @@ ul.list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1f
 .host p{margin:0;max-width:40em}
 footer .inner{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:32px 0 calc(32px + env(safe-area-inset-bottom,0px))}
 footer .eyebrow{color:var(--muted)}
+.foot-links{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
 
+
+/* cookie consent */
+.consent{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));right:auto;z-index:50;max-width:430px;background:var(--off);color:var(--black);border:1px solid var(--black);padding:22px 22px 20px;box-shadow:0 8px 30px rgba(32,32,32,.18)}
+.consent p{margin:0 0 16px;font-size:.85rem;line-height:1.6}
+.consent a{color:inherit;text-underline-offset:3px}
+.consent .row{display:flex;gap:12px}
+.consent button{flex:1;cursor:pointer;font:inherit;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;padding:14px 16px;border:1px solid var(--black);background:var(--black);color:var(--off);transition:background .25s,color .25s}
+.consent button.alt{background:transparent;color:var(--black)}
+.consent button:hover{background:transparent;color:var(--black)}
+.consent button.alt:hover{background:var(--black);color:var(--off)}
+.consent button:focus-visible{outline:2px solid var(--black);outline-offset:3px}
+.consent[hidden]{display:none}
+@media (max-width:600px){.consent{right:max(16px,env(safe-area-inset-right,0px));max-width:none}}
 @media (max-width:900px){
   .hero .inner,.story .inner,.expect .inner,.join .inner{grid-template-columns:1fr}
   .hero .inner{min-height:0}
@@ -248,6 +262,8 @@ footer .eyebrow{color:var(--muted)}
 .sff-form-wrap button[type=submit]{cursor:pointer;font:inherit;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;background:var(--black,#202020);color:var(--off,#FCFAF7);border:1px solid var(--black,#202020);padding:17px 34px;transition:background .25s,color .25s}
 .sff-form-wrap button[type=submit]:hover{background:transparent;color:var(--black,#202020)}
 .sff-form-wrap button:focus-visible,.sff-form-wrap input:focus-visible,.sff-form-wrap select:focus-visible{outline:2px solid var(--black,#202020);outline-offset:3px}
+.sff-form-wrap .sff-privacy{font-size:.78rem;color:var(--muted,#57534d);margin:16px 0 0}
+.sff-form-wrap .sff-privacy a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .sff-form-wrap .sff-thanks{padding:12px 0}
 .sff-form-wrap .sff-thanks h3{font-family:var(--display,"Cormorant Garamond",Georgia,serif);font-weight:400;font-size:2.4rem;line-height:1.02;margin:0 0 14px}
 .sff-form-wrap .sff-thanks p{margin:0 0 10px}
@@ -323,6 +339,7 @@ footer .eyebrow{color:var(--muted)}
     <div class="infusion-submit">
         <button class="infusion-recaptcha" id="recaptcha_4ed612f67b7e35ac3b3355c95dc9cbda" type="submit">Submit</button>
     </div>
+    <p class="sff-privacy">By joining the guest list, you agree to our <a href="https://sixfiguredfemales.com/privacy-policy-2/" target="_blank" rel="noopener">privacy policy</a>.</p>
 <input type="text" name="inf-sbt" style="display:none !important;"></form>
 
 <div class="sff-thanks" id="sff-thanks" role="status" aria-live="polite" tabindex="-1" hidden>
@@ -365,6 +382,10 @@ footer .eyebrow{color:var(--muted)}
   }
 
   function showThanks() {
+    if (window.fbq) {
+      var cityEl = document.getElementById('inf_custom_Pickyourcityfranchise');
+      window.fbq('track', 'Lead', { content_name: cityEl ? cityEl.value : '' });
+    }
     form.hidden = true;
     if (intro) { intro.hidden = true; }
     thanks.hidden = false;
@@ -422,9 +443,31 @@ footer .eyebrow{color:var(--muted)}
 
 <footer class="wrap"><div class="inner">
   <span class="mark">Six Figured Females</span>
-  <a class="link" href="https://sixfiguredfemales.com/">sixfiguredfemales.com</a>
+  <nav class="foot-links" aria-label="Footer"><a class="link" href="https://sixfiguredfemales.com/privacy-policy-2/" target="_blank" rel="noopener">Privacy policy</a><a class="link" href="https://sixfiguredfemales.com/">sixfiguredfemales.com</a></nav>
 </div></footer>
 
+<div class="consent" id="sff-consent" role="dialog" aria-label="Cookies" hidden>
+  <p>We'd like to use Meta's cookies to see which of our ads work. Nothing is switched on until you choose. See our <a href="https://sixfiguredfemales.com/cookie-policy/" target="_blank" rel="noopener">cookie policy</a>.</p>
+  <div class="row"><button type="button" id="sff-consent-yes">Accept</button><button type="button" class="alt" id="sff-consent-no">Decline</button></div>
+</div>
+<script>
+(function () {
+  var PIXEL_ID = '1997970133944379';
+  var box = document.getElementById('sff-consent');
+  function load() {
+    if (window.fbq) { return; }
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    window.fbq('init', PIXEL_ID);
+    window.fbq('track', 'PageView');
+  }
+  function get() { try { return localStorage.getItem('sff_cookie_choice'); } catch (e) { return null; } }
+  function set(v) { try { localStorage.setItem('sff_cookie_choice', v); } catch (e) {} }
+  var saved = get();
+  if (saved === 'yes') { load(); } else if (saved !== 'no') { box.hidden = false; }
+  document.getElementById('sff-consent-yes').addEventListener('click', function () { set('yes'); box.hidden = true; load(); });
+  document.getElementById('sff-consent-no').addEventListener('click', function () { set('no'); box.hidden = true; });
+})();
+</script>
 <script>
 (function () {
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
